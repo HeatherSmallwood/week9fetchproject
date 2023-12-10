@@ -89,7 +89,12 @@ const BasketballTeamFinder = () => {
   };
 
   return (
-    <div>
+    <div  className='container text-center'>
+      <img
+        src="https://cdn.freebiesupply.com/logos/large/2x/espn-nba-logo-png-transparent.png"
+        alt="ESPN NBA Logo"
+        className="logo-img"
+      />
       <h1 className='text-center'>Search for a Basketball Team</h1>
       <div className='w-25 mx-auto'>
         <input type='text' onChange={handleInputChange} placeholder='Enter a team name' />
@@ -98,6 +103,8 @@ const BasketballTeamFinder = () => {
 
       {team.name && (
         <div className='card' style={{ width: '18rem' }}>
+           
+          {team.logo && <img src={team.logo} className='card-img-top' alt={team.name} />}
           {team.logo && <img src={team.logo} className='card-img-top' alt={team.name} />}
           <div className='card-body'>
             <h5 className='card-title'>{team.name}</h5>
