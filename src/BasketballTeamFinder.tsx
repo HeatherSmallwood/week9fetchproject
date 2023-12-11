@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './BasetballTeamFinder.css'
-
 
 interface ITeam {
   id: number;
   name: string;
   country: string;
-  logo: string | null; 
+  logo: string | null;
   venue: string;
   founded: number;
 }
@@ -40,13 +39,13 @@ const BasketballTeamFinder = () => {
           'X-RapidAPI-Host': 'api-basketball.p.rapidapi.com',
         },
       });
-  
-      if (response && response.data && response.data.response) {
+
+      if (response) {
+        console.log(response);
         const foundTeam = response.data.response.find(
           (team: any) => team.name.toLowerCase() === teamName.toLowerCase()
         );
-        
-  
+
         if (foundTeam) {
           setTeam({
             id: foundTeam.id,
@@ -67,8 +66,17 @@ const BasketballTeamFinder = () => {
           });
         }
       }
-    } catch (error) {
-      console.error('Error fetching team:', error);
+    }  catch (error) {
+      if (error.response && error.response.status === 403) {
+        // Handle 403 error: Display an appropriate message to the user
+        console.error('Access Forbidden. Please check your permissions.');
+     
+      } else {
+        console.error('Error fetching team:', error);
+       
+      }
+  
+   
       setTeam({
         id: 0,
         name: 'Team not found',
@@ -79,14 +87,35 @@ const BasketballTeamFinder = () => {
       });
     }
   };
-  
-  
 
   const handleButtonClick = () => {
     if (teamName.trim() !== '') {
       fetchTeam();
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const url = 'https://api-basketball.p.rapidapi.com/teams?league=12&season=2019-2020';
+      const options = {
+        method: 'GET',
+        headers: {
+          'X-RapidAPI-Key': '1851a2b719msh9472d1897640ac4p1f4735jsn52b98592e5d9',
+          'X-RapidAPI-Host': 'api-basketball.p.rapidapi.com'
+        }
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div  className='container text-center'>
